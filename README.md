@@ -1,2 +1,0 @@
-# ShopLive_Android_KimSijin
-ShopLive_Android_김시진 과제전형
