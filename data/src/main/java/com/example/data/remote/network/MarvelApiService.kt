@@ -4,7 +4,7 @@ import com.example.data.remote.model.MarvelResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface MarvelApiService {
+internal interface MarvelApiService {
 
     @GET("/v1/public/characters")
     suspend fun getMarvelCharacters(
