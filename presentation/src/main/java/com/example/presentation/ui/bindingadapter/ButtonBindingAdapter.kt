@@ -7,7 +7,7 @@ import com.google.android.material.button.MaterialButton
 
 @BindingAdapter("showError")
 fun MaterialButton.showError(uiState: UiState) {
-    visibility = if (uiState is UiState.Error)
+    visibility = if (uiState == UiState.Error)
         View.VISIBLE
     else
         View.GONE

@@ -30,7 +30,8 @@ class SearchViewModel @Inject constructor(
                     if (marvelCharacters.isEmpty()) {
                         emit(UiState.Empty)
                     } else {
-                        emit(UiState.Success(marvelCharacters))
+                        emit(UiState.Success)
+                        _defaultList.value = marvelCharacters
                     }
                 }.onFailure {
                     emit(UiState.Error)
@@ -42,6 +43,9 @@ class SearchViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(1000),
         initialValue = UiState.Empty
     )
+
+    private val _defaultList = MutableStateFlow(emptyList<MarvelCharacter>())
+    val defaultList = _defaultList.asStateFlow()
 
     fun setSearchQuery(query: String) {
         viewModelScope.launch {
@@ -55,9 +59,6 @@ class SearchViewModel @Inject constructor(
 
 }
 
-sealed class UiState {
-    object Loading : UiState()
-    object Empty : UiState()
-    data class Success(val list: List<MarvelCharacter>) : UiState()
-    object Error : UiState()
+enum class UiState {
+    Loading, Empty, Success, Error
 }
