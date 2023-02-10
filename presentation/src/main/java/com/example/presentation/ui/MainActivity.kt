@@ -6,10 +6,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.presentation.R
 import com.example.presentation.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         initBottomNavigation()
     }
 
-    private fun initBottomNavigation(){
+    private fun initBottomNavigation() {
         NavigationUI.setupWithNavController(
             binding.bottomNavigationView,
             findNavController(R.id.nav_host)
