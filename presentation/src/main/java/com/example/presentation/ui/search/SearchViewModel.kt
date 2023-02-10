@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MarvelCharacter
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,13 +16,41 @@ class SearchViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _uiState = MutableStateFlow(UiState.Empty)
-    val uiState = _uiState.asStateFlow()
+    val uiState: StateFlow<UiState> = _searchQuery.flatMapLatest { query ->
+        flow {
+            emit(UiState.Loading)
+
+            if (query.isBlank()) {
+                emit(UiState.Empty)
+            } else {
+                getMarvelCharacterUseCase(
+                    query,
+                    DEFAULT_OFFSET
+                ).onSuccess { marvelCharacters ->
+                    if (marvelCharacters.isEmpty()) {
+                        emit(UiState.Empty)
+                    } else {
+                        emit(UiState.Success(marvelCharacters))
+                    }
+                }.onFailure {
+                    emit(UiState.Error)
+                }
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(1000),
+        initialValue = UiState.Empty
+    )
 
     fun setSearchQuery(query: String) {
         viewModelScope.launch {
             _searchQuery.value = query
         }
+    }
+
+    companion object {
+        private const val DEFAULT_OFFSET = 0
     }
 
 }
