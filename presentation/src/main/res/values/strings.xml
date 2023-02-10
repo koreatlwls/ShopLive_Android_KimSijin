@@ -3,4 +3,6 @@
     <string name="search_text">SEARCH</string>
     <string name="favorite_text">FAVORITE</string>
     <string name="search_hint">마블 캐릭터명을 입력해주세요.</string>
+    <string name="search_empty_text">검색 결과가 없습니다.</string>
+    <string name="retry_text">다시시도</string>
 </resources>
