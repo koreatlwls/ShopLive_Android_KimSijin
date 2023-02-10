@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShopLive</string>
+    <string name="search_text">SEARCH</string>
+    <string name="favorite_text">FAVORITE</string>
 </resources>
