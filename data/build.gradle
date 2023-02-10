@@ -6,6 +6,9 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.example.data'
     compileSdk 33
@@ -16,6 +19,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        buildConfigField "String", "BACK_URL", properties['BACK_URL']
+        buildConfigField "String", "PUBLIC_KEY", properties['PUBLIC_KEY']
+        buildConfigField "String", "PRIVATE_KEY", properties['PRIVATE_KEY']
     }
 
     buildTypes {
