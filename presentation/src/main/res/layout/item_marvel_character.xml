@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.example.presentation.R"/>
+
         <variable
             name="marvelCharacter"
             type="com.example.domain.model.MarvelCharacter" />
@@ -26,6 +28,8 @@
                 android:id="@+id/character_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                app:imageUrl="@{marvelCharacter.thumbnail}"
+                app:placeholder="@{R.color.light_gray}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
