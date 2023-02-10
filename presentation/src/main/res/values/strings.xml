@@ -2,4 +2,5 @@
     <string name="app_name">ShopLive</string>
     <string name="search_text">SEARCH</string>
     <string name="favorite_text">FAVORITE</string>
+    <string name="search_hint">마블 캐릭터명을 입력해주세요.</string>
 </resources>
