@@ -1,9 +1,10 @@
 package com.example.data.remote.model
 
+import com.example.data.repository.model.MarvelCharacterRepositoryModel
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Result(
+internal data class Result(
     val comics: Comics,
     val description: String,
     val events: Events,
@@ -15,4 +16,11 @@ data class Result(
     val stories: Stories,
     val thumbnail: Thumbnail,
     val urls: List<Url>
-)
+) {
+    fun toRepositoryModel() = MarvelCharacterRepositoryModel(
+        id = id,
+        name = name,
+        description = description,
+        thumbnail = thumbnail.path + thumbnail.extension
+    )
+}
