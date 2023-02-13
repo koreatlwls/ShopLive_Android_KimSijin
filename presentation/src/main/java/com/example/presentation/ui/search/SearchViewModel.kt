@@ -3,7 +3,9 @@ package com.example.presentation.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MarvelCharacter
+import com.example.domain.usecase.favorite.DeleteFavoriteWithIdUseCase
 import com.example.domain.usecase.favorite.InsertFavoriteUseCase
+import com.example.domain.usecase.favorite.IsExistFavoriteUseCase
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
 import com.example.presentation.model.CommonItem
 import com.example.presentation.model.UiState
@@ -16,7 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getMarvelCharacterUseCase: GetMarvelCharacterUseCase,
-    private val insertFavoriteUseCase: InsertFavoriteUseCase
+    private val insertFavoriteUseCase: InsertFavoriteUseCase,
+    private val isExistFavoriteUseCase: IsExistFavoriteUseCase,
+    private val deleteFavoriteWithIdUseCase: DeleteFavoriteWithIdUseCase,
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -120,7 +124,11 @@ class SearchViewModel @Inject constructor(
 
     fun insertFavorite(marvelCharacter: MarvelCharacter) {
         viewModelScope.launch {
-            insertFavoriteUseCase(marvelCharacter)
+            if (isExistFavoriteUseCase(marvelCharacter.id)) {
+                deleteFavoriteWithIdUseCase(marvelCharacter.id)
+            } else {
+                insertFavoriteUseCase(marvelCharacter)
+            }
         }
     }
 
