@@ -17,11 +17,11 @@ internal data class FavoriteRepositoryModel(
         thumbnail = thumbnail
     )
 
-    fun toUseCaseModel() = MarvelCharacter(
-        id = characterId,
-        name = name,
-        description = description,
-        thumbnail = thumbnail
-    )
+//    fun toUseCaseModel() = MarvelCharacter(
+//        id = characterId,
+//        name = name,
+//        description = description,
+//        thumbnail = thumbnail
+//    )
 
 }

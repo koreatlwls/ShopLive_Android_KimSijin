@@ -8,10 +8,11 @@ internal data class MarvelCharacterRepositoryModel(
     val description: String,
     val thumbnail: String
 ) {
-    fun toUseCaseModel() = MarvelCharacter(
+    fun toUseCaseModel(check: Boolean) = MarvelCharacter(
         id = id,
         name = name,
         description = description,
         thumbnail = thumbnail,
+        isFavorite = check
     )
 }
