@@ -2,8 +2,10 @@ package com.example.presentation.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.MarvelCharacter
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
+import com.example.presentation.model.CommonItem
+import com.example.presentation.model.UiState
+import com.example.presentation.model.ViewObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,7 +33,14 @@ class SearchViewModel @Inject constructor(
                         emit(UiState.Empty)
                     } else {
                         emit(UiState.Success)
-                        _marvelCharacterList.value = marvelCharacters
+
+                        val commonItems = marvelCharacters.map { marvelCharacter ->
+                            CommonItem(
+                                viewType = UiState.Success,
+                                viewObject = ViewObject.SuccessViewObject(marvelCharacter)
+                            )
+                        }
+                        _marvelCharacterList.value = commonItems
                     }
                 }.onFailure {
                     emit(UiState.Error)
@@ -44,10 +53,7 @@ class SearchViewModel @Inject constructor(
         initialValue = UiState.Empty
     )
 
-    private val _moreDataUiState = MutableStateFlow(UiState.Empty)
-    val moreDataUiState = _moreDataUiState.asStateFlow()
-
-    private val _marvelCharacterList = MutableStateFlow(emptyList<MarvelCharacter>())
+    private val _marvelCharacterList = MutableStateFlow(emptyList<CommonItem>())
     val marvelCharacterList = _marvelCharacterList.asStateFlow()
 
     fun setSearchQuery(query: String) {
@@ -57,26 +63,56 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getMoreData(offset: Int) {
+        val moreDataList = _marvelCharacterList.value.filter { it.viewType == UiState.Success }
+
         viewModelScope.launch {
-            _moreDataUiState.value = UiState.Loading
+            addState(
+                moreDataList.toMutableList(),
+                CommonItem(
+                    UiState.Loading,
+                    ViewObject.LoadingViewObject
+                )
+            )
 
             getMarvelCharacterUseCase(
                 _searchQuery.value,
                 offset
             ).onSuccess { marvelCharacters ->
                 if (marvelCharacters.isEmpty()) {
-                    _moreDataUiState.value = UiState.Empty
+                    addState(
+                        moreDataList.toMutableList(),
+                        CommonItem(
+                            UiState.Empty,
+                            ViewObject.EmptyViewObject
+                        )
+                    )
                 } else {
-                    _moreDataUiState.value = UiState.Success
+                    val commonItems = marvelCharacters.map { marvelCharacter ->
+                        CommonItem(
+                            viewType = UiState.Success,
+                            viewObject = ViewObject.SuccessViewObject(marvelCharacter)
+                        )
+                    }
 
-                    val moreDataList = _marvelCharacterList.value.toMutableList()
-                    moreDataList.addAll(marvelCharacters)
-                    _marvelCharacterList.value = moreDataList
+                    val successList = moreDataList.toMutableList()
+                    successList.addAll(commonItems)
+                    _marvelCharacterList.value = successList
                 }
             }.onFailure {
-                _moreDataUiState.value = UiState.Error
+                addState(
+                    moreDataList.toMutableList(),
+                    CommonItem(
+                        UiState.Error,
+                        ViewObject.ErrorViewObject
+                    )
+                )
             }
         }
+    }
+
+    private fun addState(list : MutableList<CommonItem>, commonItem : CommonItem){
+        list.add(commonItem)
+        _marvelCharacterList.value = list
     }
 
     companion object {
@@ -85,6 +121,3 @@ class SearchViewModel @Inject constructor(
 
 }
 
-enum class UiState {
-    Loading, Empty, Success, Error
-}

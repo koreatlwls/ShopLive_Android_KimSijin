@@ -61,12 +61,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         }
     }
 
-    private fun listenRecyclerViewScroll(){
-        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+    private fun listenRecyclerViewScroll() {
+        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if(!binding.searchRecyclerView.canScrollVertically(1)){
+                if (!binding.searchRecyclerView.canScrollVertically(IS_DIRECTION_BOTTOM)) {
                     viewModel.getMoreData(marvelCharacterAdapter.itemCount)
                 }
             }
@@ -74,7 +74,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     companion object {
-        const val ROW_CNT = 2
+        private const val ROW_CNT = 2
+        private const val IS_DIRECTION_BOTTOM = 1
     }
 
 }

@@ -4,46 +4,82 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.model.MarvelCharacter
+import com.example.presentation.databinding.ItemEmptyBinding
+import com.example.presentation.databinding.ItemErrorBinding
+import com.example.presentation.databinding.ItemLoadingBinding
 import com.example.presentation.databinding.ItemMarvelCharacterBinding
+import com.example.presentation.model.CommonItem
+import com.example.presentation.model.UiState
+import com.example.presentation.model.ViewObject
 
 class MarvelCharacterAdapter(
-    private val onItemClick: (MarvelCharacter) -> Unit
-) : ListAdapter<MarvelCharacter, MarvelCharacterAdapter.ViewHolder>(diffUtil) {
+    private val onItemClick: (CommonItem) -> Unit
+) : ListAdapter<CommonItem, CommonViewHolder>(diffUtil) {
 
-    class ViewHolder(private val binding: ItemMarvelCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(marvelCharacter: MarvelCharacter) {
-            binding.marvelCharacter = marvelCharacter
-            binding.executePendingBindings()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
+        return when (viewType) {
+            UiState.Loading.ordinal -> {
+                CommonViewHolder.LoadingViewHolder(
+                    ItemLoadingBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            UiState.Empty.ordinal -> {
+                CommonViewHolder.EmptyViewHolder(
+                    ItemEmptyBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            UiState.Success.ordinal -> {
+                CommonViewHolder.SuccessViewHolder(
+                    ItemMarvelCharacterBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            else -> {
+                CommonViewHolder.ErrorViewHolder(
+                    ItemErrorBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            ItemMarvelCharacterBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
         holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
             onItemClick.invoke(currentList[holder.adapterPosition])
         }
     }
 
-    companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<MarvelCharacter>() {
+    override fun getItemViewType(position: Int): Int {
+        return currentList[position].viewType.ordinal
+    }
 
-            override fun areItemsTheSame(oldItem: MarvelCharacter, newItem: MarvelCharacter): Boolean {
-                return oldItem.id == newItem.id
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<CommonItem>() {
+
+            override fun areItemsTheSame(oldItem: CommonItem, newItem: CommonItem): Boolean {
+                return if (oldItem.viewObject is ViewObject.SuccessViewObject && newItem.viewObject is ViewObject.SuccessViewObject) {
+                    oldItem.viewObject.marvelCharacter.id == newItem.viewObject.marvelCharacter.id
+                } else {
+                    oldItem.viewType == newItem.viewType
+                }
             }
 
-            override fun areContentsTheSame(oldItem: MarvelCharacter, newItem: MarvelCharacter): Boolean {
+            override fun areContentsTheSame(oldItem: CommonItem, newItem: CommonItem): Boolean {
                 return oldItem == newItem
             }
 

@@ -3,7 +3,7 @@ package com.example.presentation.ui.bindingadapter
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.example.presentation.ui.search.UiState
+import com.example.presentation.model.UiState
 
 @BindingAdapter("showEmpty")
 fun TextView.showEmpty(uiState: UiState) {

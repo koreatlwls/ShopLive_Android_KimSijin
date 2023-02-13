@@ -4,7 +4,7 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.presentation.ui.search.UiState
+import com.example.presentation.model.UiState
 
 @BindingAdapter("showSuccess")
 fun RecyclerView.showSuccess(uiState: UiState) {
