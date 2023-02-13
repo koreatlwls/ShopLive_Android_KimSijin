@@ -1,7 +1,6 @@
 package com.example.presentation.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSearchBinding
 import com.example.presentation.model.UiState
+import com.example.presentation.model.ViewObject
 import com.example.presentation.ui.adapter.MarvelCharacterAdapter
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.bindingadapter.textChangesToFlow
@@ -52,8 +52,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     private fun initAdapter() {
-        marvelCharacterAdapter = MarvelCharacterAdapter {
-            Log.e("ABC", it.toString())
+        marvelCharacterAdapter = MarvelCharacterAdapter { commonItem ->
+            if(commonItem.viewObject is ViewObject.SuccessViewObject){
+                //TODO 즐겨찾기 추가하자.
+            }
         }
 
         val gridLayoutManager = GridLayoutManager(requireContext(), MAX_ROW_CNT)

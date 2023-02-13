@@ -1,5 +1,7 @@
 package com.example.data.di
 
+import com.example.data.local.source.FavoriteLocalDataSource
+import com.example.data.local.source.FavoriteLocalDataSourceImpl
 import com.example.data.remote.source.MarvelRemoteDataSource
 import com.example.data.remote.source.MarvelRemoteDataSourceImpl
 import dagger.Binds
@@ -17,5 +19,11 @@ internal interface DataSourceModule {
     fun provideMarvelRemoteDataSource(
         marvelRemoteDataSourceImpl: MarvelRemoteDataSourceImpl
     ): MarvelRemoteDataSource
+
+    @Binds
+    @Singleton
+    fun provideFavoriteLocalDataSource(
+        favoriteLocalDataSourceImpl: FavoriteLocalDataSourceImpl
+    ): FavoriteLocalDataSource
 
 }
