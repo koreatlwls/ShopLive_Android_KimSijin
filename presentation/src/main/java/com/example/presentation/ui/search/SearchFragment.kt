@@ -58,6 +58,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             if (marvelCharacter.viewObject is ViewObject.SuccessViewObject) {
                 viewModel.insertFavorite(marvelCharacter.viewObject.marvelCharacter, position)
             }
+
+            if (marvelCharacter.viewObject is ViewObject.ErrorViewObject) {
+                viewModel.getMoreData(marvelCharacterAdapter.itemCount - 1)
+            }
         }
 
         val gridLayoutManager = GridLayoutManager(requireContext(), MAX_ROW_CNT)
