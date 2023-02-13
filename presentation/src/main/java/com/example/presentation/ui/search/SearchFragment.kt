@@ -44,7 +44,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             editTextFlow
                 .debounce(300)
                 .onEach {
-                    viewModel.setSearchQuery(it.toString())
+                    viewModel.getData(it.toString())
                 }
                 .launchIn(this)
         }
