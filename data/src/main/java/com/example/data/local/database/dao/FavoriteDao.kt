@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.data.local.model.FavoriteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface FavoriteDao {
@@ -17,5 +18,8 @@ internal interface FavoriteDao {
 
     @Query("DELETE FROM FavoriteEntity WHERE characterId=:characterId")
     suspend fun deleteFavoriteWithId(characterId: String)
+
+    @Query("SELECT * FROM FavoriteEntity ORDER BY id DESC LIMIT 5")
+    fun getAllFavorites(): Flow<List<FavoriteEntity>>
 
 }

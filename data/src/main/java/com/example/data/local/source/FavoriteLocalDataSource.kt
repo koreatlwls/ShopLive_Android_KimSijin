@@ -1,6 +1,7 @@
 package com.example.data.local.source
 
 import com.example.data.repository.model.FavoriteRepositoryModel
+import kotlinx.coroutines.flow.Flow
 
 internal interface FavoriteLocalDataSource {
 
@@ -9,5 +10,7 @@ internal interface FavoriteLocalDataSource {
     suspend fun selectId(characterId: String): Boolean
 
     suspend fun deleteFavoriteWithId(characterId: String)
+
+    fun getAllFavorites(): Flow<List<FavoriteRepositoryModel>>
 
 }
