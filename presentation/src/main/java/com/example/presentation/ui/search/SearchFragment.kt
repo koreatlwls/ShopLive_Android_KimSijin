@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSearchBinding
 import com.example.presentation.ui.adapter.MarvelCharacterAdapter
@@ -28,6 +29,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
         initAdapter()
         listenSearchEditText()
+        listenRecyclerViewScroll()
     }
 
     override fun initBinding() {
@@ -57,6 +59,18 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             adapter = marvelCharacterAdapter
             layoutManager = GridLayoutManager(requireContext(), ROW_CNT)
         }
+    }
+
+    private fun listenRecyclerViewScroll(){
+        binding.searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if(!binding.searchRecyclerView.canScrollVertically(1)){
+                    viewModel.getMoreData(marvelCharacterAdapter.itemCount)
+                }
+            }
+        })
     }
 
     companion object {

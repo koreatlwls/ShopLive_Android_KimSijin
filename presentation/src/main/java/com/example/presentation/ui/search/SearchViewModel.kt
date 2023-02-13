@@ -31,7 +31,7 @@ class SearchViewModel @Inject constructor(
                         emit(UiState.Empty)
                     } else {
                         emit(UiState.Success)
-                        _defaultList.value = marvelCharacters
+                        _marvelCharacterList.value = marvelCharacters
                     }
                 }.onFailure {
                     emit(UiState.Error)
@@ -44,12 +44,38 @@ class SearchViewModel @Inject constructor(
         initialValue = UiState.Empty
     )
 
-    private val _defaultList = MutableStateFlow(emptyList<MarvelCharacter>())
-    val defaultList = _defaultList.asStateFlow()
+    private val _moreDataUiState = MutableStateFlow(UiState.Empty)
+    val moreDataUiState = _moreDataUiState.asStateFlow()
+
+    private val _marvelCharacterList = MutableStateFlow(emptyList<MarvelCharacter>())
+    val marvelCharacterList = _marvelCharacterList.asStateFlow()
 
     fun setSearchQuery(query: String) {
         viewModelScope.launch {
             _searchQuery.value = query
+        }
+    }
+
+    fun getMoreData(offset: Int) {
+        viewModelScope.launch {
+            _moreDataUiState.value = UiState.Loading
+
+            getMarvelCharacterUseCase(
+                _searchQuery.value,
+                offset
+            ).onSuccess { marvelCharacters ->
+                if (marvelCharacters.isEmpty()) {
+                    _moreDataUiState.value = UiState.Empty
+                } else {
+                    _moreDataUiState.value = UiState.Success
+
+                    val moreDataList = _marvelCharacterList.value.toMutableList()
+                    moreDataList.addAll(marvelCharacters)
+                    _marvelCharacterList.value = moreDataList
+                }
+            }.onFailure {
+                _moreDataUiState.value = UiState.Error
+            }
         }
     }
 
