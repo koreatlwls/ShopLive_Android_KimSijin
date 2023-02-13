@@ -9,7 +9,6 @@ import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSearchBinding
 import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
-import com.example.presentation.ui.adapter.MarvelCharacterAdapter
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.bindingadapter.textChangesToFlow
 import com.example.presentation.util.repeatOnStarted
