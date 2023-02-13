@@ -6,4 +6,6 @@ interface FavoriteRepository {
 
     suspend fun insertFavorite(marvelCharacter: MarvelCharacter)
 
+    suspend fun selectId(characterId: String): Boolean
+
 }

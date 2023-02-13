@@ -12,4 +12,8 @@ internal class FavoriteLocalDataSourceImpl @Inject constructor(
         favoriteDao.insertFavorite(favoriteRepositoryModel.toEntity())
     }
 
+    override suspend fun selectId(characterId: String): Boolean {
+        return favoriteDao.selectId(characterId)
+    }
+
 }

@@ -21,4 +21,8 @@ internal class FavoriteRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun selectId(characterId: String): Boolean {
+        return favoriteLocalDataSource.selectId(characterId)
+    }
+
 }

@@ -6,4 +6,6 @@ internal interface FavoriteLocalDataSource {
 
     suspend fun insertFavorite(favoriteRepositoryModel: FavoriteRepositoryModel)
 
+    suspend fun selectId(characterId: String): Boolean
+
 }
