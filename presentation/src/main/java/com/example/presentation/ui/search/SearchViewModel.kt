@@ -2,6 +2,8 @@ package com.example.presentation.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.MarvelCharacter
+import com.example.domain.usecase.favorite.InsertFavoriteUseCase
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
 import com.example.presentation.model.CommonItem
 import com.example.presentation.model.UiState
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val getMarvelCharacterUseCase: GetMarvelCharacterUseCase
+    private val getMarvelCharacterUseCase: GetMarvelCharacterUseCase,
+    private val insertFavoriteUseCase: InsertFavoriteUseCase
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -110,9 +113,15 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun addState(list : MutableList<CommonItem>, commonItem : CommonItem){
+    private fun addState(list: MutableList<CommonItem>, commonItem: CommonItem) {
         list.add(commonItem)
         _marvelCharacterList.value = list
+    }
+
+    fun insertFavorite(marvelCharacter: MarvelCharacter) {
+        viewModelScope.launch {
+            insertFavoriteUseCase(marvelCharacter)
+        }
     }
 
     companion object {

@@ -53,8 +53,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
     private fun initAdapter() {
         marvelCharacterAdapter = MarvelCharacterAdapter { commonItem ->
-            if(commonItem.viewObject is ViewObject.SuccessViewObject){
-                //TODO 즐겨찾기 추가하자.
+            if (commonItem.viewObject is ViewObject.SuccessViewObject) {
+                viewModel.insertFavorite(commonItem.viewObject.marvelCharacter)
             }
         }
 
