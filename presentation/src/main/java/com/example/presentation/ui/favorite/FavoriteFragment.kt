@@ -28,8 +28,8 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
     }
 
     private fun initAdapter() {
-        favoriteAdapter = FavoriteAdapter {
-
+        favoriteAdapter = FavoriteAdapter { marvelCharacter ->
+            viewModel.deleteFavorite(marvelCharacter)
         }
 
         binding.favoriteRecyclerView.apply {
