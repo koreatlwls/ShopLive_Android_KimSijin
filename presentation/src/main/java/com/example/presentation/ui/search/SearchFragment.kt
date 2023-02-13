@@ -44,7 +44,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             editTextFlow
                 .debounce(300)
                 .onEach {
-                    viewModel.setSearchQuery(it.toString())
+                    viewModel.getData(it.toString())
                 }
                 .launchIn(this)
         }
@@ -57,6 +57,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
             if (marvelCharacter.viewObject is ViewObject.SuccessViewObject) {
                 viewModel.insertFavorite(marvelCharacter.viewObject.marvelCharacter, position)
+            }
+
+            if (marvelCharacter.viewObject is ViewObject.ErrorViewObject) {
+                viewModel.getMoreData(marvelCharacterAdapter.itemCount - 1)
             }
         }
 

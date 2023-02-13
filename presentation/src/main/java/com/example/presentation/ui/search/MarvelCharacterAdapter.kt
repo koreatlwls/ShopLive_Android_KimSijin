@@ -59,9 +59,7 @@ class MarvelCharacterAdapter(
 
     override fun onBindViewHolder(holder: MarvelCharacterViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            onItemClick.invoke(Pair(currentList[holder.adapterPosition], holder.adapterPosition))
-        }
+        holder.onItemClick = onItemClick
     }
 
     override fun getItemViewType(position: Int): Int {

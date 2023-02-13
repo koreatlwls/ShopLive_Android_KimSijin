@@ -83,6 +83,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.retryGetData()}"
             android:text="@string/retry_text"
             android:textColor="@color/black"
             android:textSize="24sp"

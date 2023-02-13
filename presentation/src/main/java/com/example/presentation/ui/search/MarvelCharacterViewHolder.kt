@@ -13,6 +13,8 @@ sealed class MarvelCharacterViewHolder(
     binding: ViewDataBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    var onItemClick: ((Pair<CommonItem, Int>) -> Unit)? = null
+
     abstract fun bind(item: CommonItem)
 
     class LoadingViewHolder(binding: ItemLoadingBinding) : MarvelCharacterViewHolder(binding) {
@@ -25,6 +27,10 @@ sealed class MarvelCharacterViewHolder(
 
     class SuccessViewHolder(private val binding: ItemMarvelCharacterBinding) : MarvelCharacterViewHolder(binding) {
         override fun bind(item: CommonItem) {
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(Pair(item, adapterPosition))
+            }
+
             if (item.viewObject is ViewObject.SuccessViewObject) {
                 binding.marvelCharacter = item.viewObject.marvelCharacter
                 binding.executePendingBindings()
@@ -32,8 +38,12 @@ sealed class MarvelCharacterViewHolder(
         }
     }
 
-    class ErrorViewHolder(binding: ItemErrorBinding) : MarvelCharacterViewHolder(binding) {
-        override fun bind(item: CommonItem) = Unit
+    class ErrorViewHolder(private val binding: ItemErrorBinding) : MarvelCharacterViewHolder(binding) {
+        override fun bind(item: CommonItem) {
+            binding.retryButton.setOnClickListener {
+                onItemClick?.invoke(Pair(item, adapterPosition))
+            }
+        }
     }
 
 }

@@ -10,7 +10,9 @@ import com.example.presentation.model.CommonItem
 import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,23 +23,31 @@ class SearchViewModel @Inject constructor(
     private val deleteFavoriteWithIdUseCase: DeleteFavoriteWithIdUseCase,
 ) : ViewModel() {
 
-    private val _searchQuery = MutableStateFlow("")
+    private var currentQuery = ""
 
-    val uiState: StateFlow<UiState> = _searchQuery.flatMapLatest { query ->
-        flow {
-            emit(UiState.Loading)
+    private val _uiState = MutableStateFlow(UiState.Empty)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _marvelCharacterList = MutableStateFlow(emptyList<CommonItem>())
+    val marvelCharacterList = _marvelCharacterList.asStateFlow()
+
+    fun getData(query: String) {
+        currentQuery = query
+
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
 
             if (query.isBlank()) {
-                emit(UiState.Empty)
+                _uiState.value = UiState.Empty
             } else {
                 getMarvelCharacterUseCase(
                     query,
                     DEFAULT_OFFSET
                 ).onSuccess { marvelCharacters ->
                     if (marvelCharacters.isEmpty()) {
-                        emit(UiState.Empty)
+                        _uiState.value = UiState.Empty
                     } else {
-                        emit(UiState.Success)
+                        _uiState.value = UiState.Success
 
                         val commonItems = marvelCharacters.map { marvelCharacter ->
                             CommonItem(
@@ -48,22 +58,15 @@ class SearchViewModel @Inject constructor(
                         _marvelCharacterList.value = commonItems
                     }
                 }.onFailure {
-                    emit(UiState.Error)
+                    _uiState.value = UiState.Error
                 }
             }
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = UiState.Empty
-    )
+    }
 
-    private val _marvelCharacterList = MutableStateFlow(emptyList<CommonItem>())
-    val marvelCharacterList = _marvelCharacterList.asStateFlow()
-
-    fun setSearchQuery(query: String) {
+    fun retryGetData() {
         viewModelScope.launch {
-            _searchQuery.value = query
+            getData(currentQuery)
         }
     }
 
@@ -80,7 +83,7 @@ class SearchViewModel @Inject constructor(
             )
 
             getMarvelCharacterUseCase(
-                _searchQuery.value,
+                currentQuery,
                 offset
             ).onSuccess { marvelCharacters ->
                 if (marvelCharacters.isEmpty()) {
