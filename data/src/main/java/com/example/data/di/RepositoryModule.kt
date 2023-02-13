@@ -1,6 +1,8 @@
 package com.example.data.di
 
+import com.example.data.repository.FavoriteRepositoryImpl
 import com.example.data.repository.MarvelRepositoryImpl
+import com.example.domain.repository.FavoriteRepository
 import com.example.domain.repository.MarvelRepository
 import dagger.Binds
 import dagger.Module
@@ -17,5 +19,11 @@ internal interface RepositoryModule {
     fun provideMarvelRepository(
         marvelRepositoryImpl: MarvelRepositoryImpl
     ): MarvelRepository
+
+    @Binds
+    @Singleton
+    fun provideFavoriteRepository(
+        favoriteRepositoryImpl: FavoriteRepositoryImpl
+    ): FavoriteRepository
 
 }
