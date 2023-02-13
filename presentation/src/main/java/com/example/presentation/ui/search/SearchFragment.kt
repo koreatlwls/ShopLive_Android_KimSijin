@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSearchBinding
+import com.example.presentation.model.UiState
 import com.example.presentation.ui.adapter.MarvelCharacterAdapter
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.bindingadapter.textChangesToFlow
@@ -55,9 +56,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             Log.e("ABC", it.toString())
         }
 
+        val gridLayoutManager = GridLayoutManager(requireContext(), MAX_ROW_CNT)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (marvelCharacterAdapter.currentList[position].viewType == UiState.Success) {
+                    MIN_ROW_CNT
+                } else {
+                    MAX_ROW_CNT
+                }
+            }
+        }
+
         binding.searchRecyclerView.apply {
             adapter = marvelCharacterAdapter
-            layoutManager = GridLayoutManager(requireContext(), ROW_CNT)
+            layoutManager = gridLayoutManager
         }
     }
 
@@ -74,7 +86,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     companion object {
-        private const val ROW_CNT = 2
+        private const val MAX_ROW_CNT = 2
+        private const val MIN_ROW_CNT = 1
         private const val IS_DIRECTION_BOTTOM = 1
     }
 
