@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MarvelCharacter
 import com.example.domain.usecase.favorite.DeleteFavoriteWithIdUseCase
 import com.example.domain.usecase.favorite.InsertFavoriteUseCase
-import com.example.domain.usecase.favorite.IsExistFavoriteUseCase
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
 import com.example.presentation.model.CommonItem
 import com.example.presentation.model.UiState
@@ -19,7 +18,6 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val getMarvelCharacterUseCase: GetMarvelCharacterUseCase,
     private val insertFavoriteUseCase: InsertFavoriteUseCase,
-    private val isExistFavoriteUseCase: IsExistFavoriteUseCase,
     private val deleteFavoriteWithIdUseCase: DeleteFavoriteWithIdUseCase,
 ) : ViewModel() {
 
@@ -122,9 +120,25 @@ class SearchViewModel @Inject constructor(
         _marvelCharacterList.value = list
     }
 
-    fun insertFavorite(marvelCharacter: MarvelCharacter) {
+    fun insertFavorite(marvelCharacter: MarvelCharacter, position: Int) {
         viewModelScope.launch {
-            if (isExistFavoriteUseCase(marvelCharacter.id)) {
+            val updateList = _marvelCharacterList.value.toMutableList().apply {
+                val commonItem = this[position]
+
+                if (commonItem.viewObject is ViewObject.SuccessViewObject) {
+                    this[position] = CommonItem(
+                        UiState.Success,
+                        ViewObject.SuccessViewObject(
+                            commonItem.viewObject.marvelCharacter.copy(
+                                isFavorite = marvelCharacter.isFavorite.not()
+                            )
+                        )
+                    )
+                }
+            }
+            _marvelCharacterList.value = updateList
+
+            if (marvelCharacter.isFavorite) {
                 deleteFavoriteWithIdUseCase(marvelCharacter.id)
             } else {
                 insertFavoriteUseCase(marvelCharacter)
