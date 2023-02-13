@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.example.presentation.R"/>
+        <import type="com.example.presentation.R" />
 
         <variable
             name="marvelCharacter"
@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:backgroundTint="@{marvelCharacter.isFavorite ? @color/light_gray : @color/white}"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp">
 
@@ -29,10 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 app:imageUrl="@{marvelCharacter.thumbnail}"
-                app:placeholder="@{R.color.light_gray}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:placeholder="@{R.color.light_gray}" />
 
             <TextView
                 android:id="@+id/character_name_text_view"
