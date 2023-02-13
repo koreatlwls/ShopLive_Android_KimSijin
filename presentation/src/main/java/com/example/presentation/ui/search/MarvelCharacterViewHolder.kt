@@ -1,4 +1,4 @@
-package com.example.presentation.ui.adapter
+package com.example.presentation.ui.search
 
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
@@ -9,21 +9,21 @@ import com.example.presentation.databinding.ItemMarvelCharacterBinding
 import com.example.presentation.model.CommonItem
 import com.example.presentation.model.ViewObject
 
-sealed class CommonViewHolder(
+sealed class MarvelCharacterViewHolder(
     binding: ViewDataBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     abstract fun bind(item: CommonItem)
 
-    class LoadingViewHolder(binding: ItemLoadingBinding) : CommonViewHolder(binding) {
+    class LoadingViewHolder(binding: ItemLoadingBinding) : MarvelCharacterViewHolder(binding) {
         override fun bind(item: CommonItem) = Unit
     }
 
-    class EmptyViewHolder(binding: ItemEmptyBinding) : CommonViewHolder(binding) {
+    class EmptyViewHolder(binding: ItemEmptyBinding) : MarvelCharacterViewHolder(binding) {
         override fun bind(item: CommonItem) = Unit
     }
 
-    class SuccessViewHolder(private val binding: ItemMarvelCharacterBinding) : CommonViewHolder(binding) {
+    class SuccessViewHolder(private val binding: ItemMarvelCharacterBinding) : MarvelCharacterViewHolder(binding) {
         override fun bind(item: CommonItem) {
             if (item.viewObject is ViewObject.SuccessViewObject) {
                 binding.marvelCharacter = item.viewObject.marvelCharacter
@@ -32,7 +32,7 @@ sealed class CommonViewHolder(
         }
     }
 
-    class ErrorViewHolder(binding: ItemErrorBinding) : CommonViewHolder(binding) {
+    class ErrorViewHolder(binding: ItemErrorBinding) : MarvelCharacterViewHolder(binding) {
         override fun bind(item: CommonItem) = Unit
     }
 

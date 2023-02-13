@@ -2,6 +2,8 @@ package com.example.data.local.source
 
 import com.example.data.local.database.dao.FavoriteDao
 import com.example.data.repository.model.FavoriteRepositoryModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class FavoriteLocalDataSourceImpl @Inject constructor(
@@ -18,6 +20,14 @@ internal class FavoriteLocalDataSourceImpl @Inject constructor(
 
     override suspend fun deleteFavoriteWithId(characterId: String) {
         favoriteDao.deleteFavoriteWithId(characterId)
+    }
+
+    override fun getAllFavorites(): Flow<List<FavoriteRepositoryModel>> {
+        return favoriteDao.getAllFavorites().map { favoriteEntities ->
+            favoriteEntities.map { favoriteEntity ->
+                favoriteEntity.toRepositoryModel()
+            }
+        }
     }
 
 }

@@ -1,16 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.favorite.FavoriteFragment">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.presentation.ui.favorite.FavoriteViewModel" />
+
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guide_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guide_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circular_progress_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/end_guide_line"
+            app:layout_constraintStart_toStartOf="@id/start_guide_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:showOnLoading="@{viewModel.uiState}" />
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Favorite" />
+            android:id="@+id/favorite_empty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_empty_text"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/end_guide_line"
+            app:layout_constraintStart_toStartOf="@id/start_guide_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:showEmpty="@{viewModel.uiState}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/end_guide_line"
+            app:layout_constraintStart_toStartOf="@id/start_guide_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:showList="@{viewModel.favoriteItems}"
+            app:showSuccess="@{viewModel.uiState}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,4 +1,4 @@
-package com.example.presentation.ui.adapter
+package com.example.presentation.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,12 +14,12 @@ import com.example.presentation.model.ViewObject
 
 class MarvelCharacterAdapter(
     private val onItemClick: (Pair<CommonItem, Int>) -> Unit
-) : ListAdapter<CommonItem, CommonViewHolder>(diffUtil) {
+) : ListAdapter<CommonItem, MarvelCharacterViewHolder>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarvelCharacterViewHolder {
         return when (viewType) {
             UiState.Loading.ordinal -> {
-                CommonViewHolder.LoadingViewHolder(
+                MarvelCharacterViewHolder.LoadingViewHolder(
                     ItemLoadingBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
@@ -28,7 +28,7 @@ class MarvelCharacterAdapter(
                 )
             }
             UiState.Empty.ordinal -> {
-                CommonViewHolder.EmptyViewHolder(
+                MarvelCharacterViewHolder.EmptyViewHolder(
                     ItemEmptyBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
@@ -37,7 +37,7 @@ class MarvelCharacterAdapter(
                 )
             }
             UiState.Success.ordinal -> {
-                CommonViewHolder.SuccessViewHolder(
+                MarvelCharacterViewHolder.SuccessViewHolder(
                     ItemMarvelCharacterBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
@@ -46,7 +46,7 @@ class MarvelCharacterAdapter(
                 )
             }
             else -> {
-                CommonViewHolder.ErrorViewHolder(
+                MarvelCharacterViewHolder.ErrorViewHolder(
                     ItemErrorBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
@@ -57,7 +57,7 @@ class MarvelCharacterAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: CommonViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MarvelCharacterViewHolder, position: Int) {
         holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
             onItemClick.invoke(Pair(currentList[holder.adapterPosition], holder.adapterPosition))
