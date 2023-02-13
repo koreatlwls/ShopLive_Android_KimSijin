@@ -8,4 +8,6 @@ internal interface FavoriteLocalDataSource {
 
     suspend fun selectId(characterId: String): Boolean
 
+    suspend fun deleteFavoriteWithId(characterId: String)
+
 }

@@ -16,4 +16,8 @@ internal class FavoriteLocalDataSourceImpl @Inject constructor(
         return favoriteDao.selectId(characterId)
     }
 
+    override suspend fun deleteFavoriteWithId(characterId: String) {
+        favoriteDao.deleteFavoriteWithId(characterId)
+    }
+
 }

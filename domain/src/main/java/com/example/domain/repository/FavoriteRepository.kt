@@ -8,4 +8,6 @@ interface FavoriteRepository {
 
     suspend fun selectId(characterId: String): Boolean
 
+    suspend fun deleteFavoriteWithId(characterId: String)
+
 }

@@ -15,4 +15,7 @@ internal interface FavoriteDao {
     @Query("SELECT EXISTS(SELECT * FROM FavoriteEntity WHERE characterId=:characterId)")
     suspend fun selectId(characterId: String): Boolean
 
+    @Query("DELETE FROM FavoriteEntity WHERE characterId=:characterId")
+    suspend fun deleteFavoriteWithId(characterId: String)
+
 }
