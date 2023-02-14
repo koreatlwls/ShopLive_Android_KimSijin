@@ -37,7 +37,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
 
-            if (query.isBlank()) {
+            if (query.length < 2) {
                 _uiState.value = UiState.Empty
             } else {
                 getMarvelCharacterUseCase(
