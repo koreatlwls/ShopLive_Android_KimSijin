@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.MarvelCharacter
 import com.example.domain.usecase.favorite.DeleteFavoriteWithIdUseCase
+import com.example.domain.usecase.favorite.GetAllFavoritesUseCase
 import com.example.domain.usecase.favorite.InsertFavoriteUseCase
 import com.example.domain.usecase.search.GetMarvelCharacterUseCase
 import com.example.presentation.model.CommonItem
 import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +20,7 @@ class SearchViewModel @Inject constructor(
     private val getMarvelCharacterUseCase: GetMarvelCharacterUseCase,
     private val insertFavoriteUseCase: InsertFavoriteUseCase,
     private val deleteFavoriteWithIdUseCase: DeleteFavoriteWithIdUseCase,
+    getAllFavoritesUseCase: GetAllFavoritesUseCase
 ) : ViewModel() {
 
     private var currentQuery = ""
@@ -28,8 +28,41 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState.Empty)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val favoriteItems: StateFlow<List<MarvelCharacter>> = getAllFavoritesUseCase().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+
     private val _marvelCharacterList = MutableStateFlow(emptyList<CommonItem>())
-    val marvelCharacterList = _marvelCharacterList.asStateFlow()
+    val marvelCharacterList = favoriteItems.combine(_marvelCharacterList) { favorites, marvelCharacters ->
+        val updateList = marvelCharacters.map { commonItem ->
+            if (commonItem.viewObject is ViewObject.SuccessViewObject) {
+                val falseItem = commonItem.viewObject.marvelCharacter.copy(isFavorite = false)
+                val trueItem = falseItem.copy(isFavorite = true)
+
+                if (trueItem in favorites) {
+                    CommonItem(
+                        UiState.Success,
+                        ViewObject.SuccessViewObject(trueItem)
+                    )
+                } else {
+                    CommonItem(
+                        UiState.Success,
+                        ViewObject.SuccessViewObject(falseItem)
+                    )
+                }
+            } else {
+                commonItem
+            }
+        }
+
+        updateList
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
 
     fun getData(query: String) {
         currentQuery = query
@@ -123,24 +156,8 @@ class SearchViewModel @Inject constructor(
         _marvelCharacterList.value = list
     }
 
-    fun insertFavorite(marvelCharacter: MarvelCharacter, position: Int) {
+    fun insertFavorite(marvelCharacter: MarvelCharacter) {
         viewModelScope.launch {
-            val updateList = _marvelCharacterList.value.toMutableList().apply {
-                val commonItem = this[position]
-
-                if (commonItem.viewObject is ViewObject.SuccessViewObject) {
-                    this[position] = CommonItem(
-                        UiState.Success,
-                        ViewObject.SuccessViewObject(
-                            commonItem.viewObject.marvelCharacter.copy(
-                                isFavorite = marvelCharacter.isFavorite.not()
-                            )
-                        )
-                    )
-                }
-            }
-            _marvelCharacterList.value = updateList
-
             if (marvelCharacter.isFavorite) {
                 deleteFavoriteWithIdUseCase(marvelCharacter.id)
             } else {

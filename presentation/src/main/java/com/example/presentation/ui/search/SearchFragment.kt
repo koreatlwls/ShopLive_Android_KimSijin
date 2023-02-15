@@ -51,16 +51,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     private fun initAdapter() {
-        marvelCharacterAdapter = MarvelCharacterAdapter { pair ->
-            val marvelCharacter = pair.first
-            val position = pair.second
-
-            if (marvelCharacter.viewObject is ViewObject.SuccessViewObject) {
-                viewModel.insertFavorite(marvelCharacter.viewObject.marvelCharacter, position)
-            }
-
-            if (marvelCharacter.viewObject is ViewObject.ErrorViewObject) {
-                viewModel.getMoreData(marvelCharacterAdapter.itemCount - 1)
+        marvelCharacterAdapter = MarvelCharacterAdapter { commonItem ->
+            when (commonItem.viewObject) {
+                is ViewObject.SuccessViewObject -> viewModel.insertFavorite(commonItem.viewObject.marvelCharacter)
+                is ViewObject.ErrorViewObject -> viewModel.getMoreData(marvelCharacterAdapter.itemCount - 1)
+                else -> Unit
             }
         }
 

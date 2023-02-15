@@ -13,7 +13,7 @@ import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
 
 class MarvelCharacterAdapter(
-    private val onItemClick: (Pair<CommonItem, Int>) -> Unit
+    private val onItemClick: (CommonItem) -> Unit
 ) : ListAdapter<CommonItem, MarvelCharacterViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarvelCharacterViewHolder {
