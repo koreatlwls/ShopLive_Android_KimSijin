@@ -19,7 +19,10 @@ internal interface FavoriteDao {
     @Query("DELETE FROM FavoriteEntity WHERE characterId=:characterId")
     suspend fun deleteFavoriteWithId(characterId: String)
 
-    @Query("SELECT * FROM FavoriteEntity ORDER BY id DESC LIMIT 5")
+    @Query("SELECT * FROM FavoriteEntity ORDER BY id DESC")
     fun getAllFavorites(): Flow<List<FavoriteEntity>>
+
+    @Query("DELETE FROM FavoriteEntity WHERE id NOT IN (SELECT id FROM FavoriteEntity ORDER BY id DESC LIMIT 5)")
+    suspend fun deleteAllOldestItem()
 
 }
