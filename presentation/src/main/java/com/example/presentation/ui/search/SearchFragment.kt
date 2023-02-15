@@ -82,7 +82,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!binding.searchRecyclerView.canScrollVertically(IS_DIRECTION_BOTTOM)) {
-                    viewModel.getMoreData(marvelCharacterAdapter.itemCount)
+                    val currentItemSize = marvelCharacterAdapter.itemCount
+                    if (marvelCharacterAdapter.currentList[currentItemSize - 1].viewObject is ViewObject.SuccessViewObject) {
+                        viewModel.getMoreData(marvelCharacterAdapter.itemCount)
+                    }
+
                 }
             }
         })
