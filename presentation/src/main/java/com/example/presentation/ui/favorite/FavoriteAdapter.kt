@@ -32,7 +32,9 @@ class FavoriteAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            onItemClick.invoke(currentList[holder.adapterPosition])
+            if (holder.adapterPosition in currentList.indices) {
+                onItemClick.invoke(currentList[holder.adapterPosition])
+            }
         }
     }
 
