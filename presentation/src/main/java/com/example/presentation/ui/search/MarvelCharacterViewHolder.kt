@@ -9,6 +9,7 @@ import com.example.presentation.databinding.ItemErrorBinding
 import com.example.presentation.databinding.ItemLoadingBinding
 import com.example.presentation.databinding.ItemMarvelCharacterBinding
 import com.example.presentation.model.CommonItem
+import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
 
 sealed class MarvelCharacterViewHolder(
@@ -30,13 +31,16 @@ sealed class MarvelCharacterViewHolder(
     class SuccessViewHolder(private val binding: ItemMarvelCharacterBinding) : MarvelCharacterViewHolder(binding) {
 
         private var lastTime = System.currentTimeMillis()
+        private lateinit var commonItem: CommonItem
 
         override fun bind(item: CommonItem) {
+            commonItem = item
+
             binding.root.setOnClickListener {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastTime > CLICK_DURATION) {
                     lastTime = currentTime
-                    onItemClick?.invoke(item)
+                    onItemClick?.invoke(commonItem)
                 }
             }
 
@@ -46,10 +50,15 @@ sealed class MarvelCharacterViewHolder(
             }
         }
 
-        fun bindFavorite(marvelCharacter: MarvelCharacter){
-            if(marvelCharacter.isFavorite){
+        fun bindFavorite(marvelCharacter: MarvelCharacter) {
+            commonItem = CommonItem(
+                UiState.Success,
+                ViewObject.SuccessViewObject(marvelCharacter)
+            )
+
+            if (marvelCharacter.isFavorite) {
                 binding.cardView.setBackgroundResource(R.color.light_gray)
-            }else{
+            } else {
                 binding.cardView.setBackgroundResource(R.color.white)
             }
         }
