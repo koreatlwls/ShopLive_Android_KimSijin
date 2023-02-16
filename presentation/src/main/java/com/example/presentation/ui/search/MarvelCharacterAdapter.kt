@@ -62,6 +62,20 @@ class MarvelCharacterAdapter(
         holder.onItemClick = onItemClick
     }
 
+    override fun onBindViewHolder(holder: MarvelCharacterViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (UPDATE_SELECTED in payloads) {
+            val item = getItem(position)
+            if (
+                holder is MarvelCharacterViewHolder.SuccessViewHolder &&
+                item.viewObject is ViewObject.SuccessViewObject
+            ) {
+                holder.bindFavorite(item.viewObject.marvelCharacter)
+            }
+        } else {
+            onBindViewHolder(holder, position)
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         return currentList[position].viewType.ordinal
     }
@@ -81,7 +95,20 @@ class MarvelCharacterAdapter(
                 return oldItem == newItem
             }
 
+            override fun getChangePayload(oldItem: CommonItem, newItem: CommonItem): Any? {
+                return if (
+                    oldItem.viewObject is ViewObject.SuccessViewObject &&
+                    newItem.viewObject is ViewObject.SuccessViewObject &&
+                    oldItem.viewObject.marvelCharacter.isFavorite != newItem.viewObject.marvelCharacter.isFavorite
+                ) UPDATE_SELECTED
+                else
+                    null
+            }
+
         }
+
+        private const val UPDATE_SELECTED = 1
+
     }
 
 }

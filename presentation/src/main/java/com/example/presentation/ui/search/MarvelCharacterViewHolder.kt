@@ -2,6 +2,8 @@ package com.example.presentation.ui.search
 
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domain.model.MarvelCharacter
+import com.example.presentation.R
 import com.example.presentation.databinding.ItemEmptyBinding
 import com.example.presentation.databinding.ItemErrorBinding
 import com.example.presentation.databinding.ItemLoadingBinding
@@ -41,6 +43,14 @@ sealed class MarvelCharacterViewHolder(
             if (item.viewObject is ViewObject.SuccessViewObject) {
                 binding.marvelCharacter = item.viewObject.marvelCharacter
                 binding.executePendingBindings()
+            }
+        }
+
+        fun bindFavorite(marvelCharacter: MarvelCharacter){
+            if(marvelCharacter.isFavorite){
+                binding.cardView.setBackgroundResource(R.color.light_gray)
+            }else{
+                binding.cardView.setBackgroundResource(R.color.white)
             }
         }
     }
