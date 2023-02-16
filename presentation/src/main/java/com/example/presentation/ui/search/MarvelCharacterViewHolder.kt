@@ -26,9 +26,16 @@ sealed class MarvelCharacterViewHolder(
     }
 
     class SuccessViewHolder(private val binding: ItemMarvelCharacterBinding) : MarvelCharacterViewHolder(binding) {
+
+        private var lastTime = System.currentTimeMillis()
+
         override fun bind(item: CommonItem) {
             binding.root.setOnClickListener {
-                onItemClick?.invoke(item)
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastTime > CLICK_DURATION) {
+                    lastTime = currentTime
+                    onItemClick?.invoke(item)
+                }
             }
 
             if (item.viewObject is ViewObject.SuccessViewObject) {
@@ -44,6 +51,10 @@ sealed class MarvelCharacterViewHolder(
                 onItemClick?.invoke(item)
             }
         }
+    }
+
+    companion object {
+        private const val CLICK_DURATION = 1000L
     }
 
 }
