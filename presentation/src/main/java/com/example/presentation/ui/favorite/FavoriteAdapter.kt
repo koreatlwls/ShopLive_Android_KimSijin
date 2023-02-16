@@ -12,6 +12,8 @@ class FavoriteAdapter(
     private val onItemClick: (MarvelCharacter) -> Unit
 ) : ListAdapter<MarvelCharacter, FavoriteAdapter.ViewHolder>(diffUtil) {
 
+    private var lastTime = System.currentTimeMillis()
+
     class ViewHolder(private val binding: ItemMarvelCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(marvelCharacter: MarvelCharacter) {
             binding.marvelCharacter = marvelCharacter
@@ -32,13 +34,18 @@ class FavoriteAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            if (holder.adapterPosition in currentList.indices) {
-                onItemClick.invoke(currentList[holder.adapterPosition])
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTime > CLICK_DURATION) {
+                lastTime = currentTime
+                if (holder.adapterPosition in currentList.indices) {
+                    onItemClick.invoke(currentList[holder.adapterPosition])
+                }
             }
         }
     }
 
     companion object {
+
         val diffUtil = object : DiffUtil.ItemCallback<MarvelCharacter>() {
             override fun areItemsTheSame(oldItem: MarvelCharacter, newItem: MarvelCharacter): Boolean {
                 return oldItem.id == newItem.id
@@ -48,6 +55,9 @@ class FavoriteAdapter(
                 return oldItem == newItem
             }
         }
+
+        private const val CLICK_DURATION = 1000L
+
     }
 
 }

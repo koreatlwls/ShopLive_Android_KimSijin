@@ -3,6 +3,9 @@ package com.example.presentation.ui.search
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.R
@@ -11,11 +14,11 @@ import com.example.presentation.model.UiState
 import com.example.presentation.model.ViewObject
 import com.example.presentation.ui.base.BaseFragment
 import com.example.presentation.ui.bindingadapter.textChangesToFlow
-import com.example.presentation.util.repeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
@@ -38,15 +41,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     private fun listenSearchEditText() {
-        repeatOnStarted {
-            val editTextFlow = binding.searchTextInputEdittext.textChangesToFlow()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val editTextFlow = binding.searchTextInputEdittext.textChangesToFlow()
 
-            editTextFlow
-                .debounce(300)
-                .onEach {
-                    viewModel.getData(it.toString())
-                }
-                .launchIn(this)
+                editTextFlow
+                    .debounce(300)
+                    .onEach {
+                        if(it.toString() != viewModel.currentQuery){
+                            viewModel.getData(it.toString())
+                        }
+
+                    }
+                    .launchIn(this)
+            }
         }
     }
 
@@ -82,7 +90,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!binding.searchRecyclerView.canScrollVertically(IS_DIRECTION_BOTTOM)) {
-                    viewModel.getMoreData(marvelCharacterAdapter.itemCount)
+                    val currentItemSize = marvelCharacterAdapter.itemCount
+                    if (marvelCharacterAdapter.currentList[currentItemSize - 1].viewObject is ViewObject.SuccessViewObject) {
+                        viewModel.getMoreData(marvelCharacterAdapter.itemCount)
+                    }
+
                 }
             }
         })
