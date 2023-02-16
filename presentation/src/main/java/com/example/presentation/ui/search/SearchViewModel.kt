@@ -23,7 +23,7 @@ class SearchViewModel @Inject constructor(
     getAllFavoritesUseCase: GetAllFavoritesUseCase
 ) : ViewModel() {
 
-    private var currentQuery = ""
+    var currentQuery = ""
 
     private val _uiState = MutableStateFlow(UiState.Empty)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

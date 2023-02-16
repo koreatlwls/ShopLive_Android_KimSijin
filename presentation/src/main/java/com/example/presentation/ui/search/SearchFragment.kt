@@ -2,7 +2,7 @@ package com.example.presentation.ui.search
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
 
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by activityViewModels()
 
     private lateinit var marvelCharacterAdapter: MarvelCharacterAdapter
 
@@ -48,7 +48,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 editTextFlow
                     .debounce(300)
                     .onEach {
-                        viewModel.getData(it.toString())
+                        if(it.toString() != viewModel.currentQuery){
+                            viewModel.getData(it.toString())
+                        }
+
                     }
                     .launchIn(this)
             }
